@@ -1,0 +1,15 @@
+<div>
+  <mat-form-field appearance="legacy">
+    <mat-label>ค้นหาโปเกมอน</mat-label>
+    <input value="ditto"
+      type="text"
+      #inputText
+      matInput
+      placeholder="พิมพ์ชื่อโปเกมอนที่ต้องการ"
+    />
+    <mat-icon matSuffix>search</mat-icon>
+  </mat-form-field>
+  <mat-card>
+    {{ pokemon$ | async | json }}
+  </mat-card>
+</div>

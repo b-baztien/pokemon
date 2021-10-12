@@ -21,7 +21,7 @@
               "apps/pokemon-app/src/favicon.ico",
               "apps/pokemon-app/src/assets"
             ],
-            "styles": ["apps/pokemon-app/src/styles.scss"],
+            "styles": ["./node_modules/@angular/material/prebuilt-themes/indigo-pink.css", "apps/pokemon-app/src/styles.scss"],
             "scripts": []
           },
           "configurations": {
@@ -123,6 +123,7 @@
     }
   },
   "cli": {
+    "analytics": "fc1d4986-cac8-4760-971a-b20045103e8e",
     "defaultCollection": "@nrwl/angular",
     "packageManager": "npm"
   },
