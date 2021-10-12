@@ -29,7 +29,6 @@ export class ListPokemonComponent implements OnInit {
       debounceTime(400),
       switchMap(() => {
         const url = `https://pokeapi.co/api/v2/pokemon/?offset=${this.offset}&limit=${this.limit}/${this.inputText.nativeElement.value}`;
-        console.log({ url });
         return this.http.get<PokemonCount>(url).pipe(
           tap((response) => {
             this.listPokemon = response.results;
