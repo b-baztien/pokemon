@@ -1,9 +1,16 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { defer, fromEvent } from 'rxjs';
-import { debounceTime, switchMap, tap } from 'rxjs/operators';
+import { from, fromEvent, Observable } from 'rxjs';
+import {
+  debounceTime,
+  map,
+  mergeAll,
+  switchMap,
+  toArray,
+} from 'rxjs/operators';
 import { Pokemon } from '../interfaces/pokemon';
 import { PokemonCount } from '../interfaces/pokemon-count';
+import { PokemonDetail } from '../interfaces/pokemon-detail';
 
 @Component({
   selector: 'pokemon-list-pokemon',
@@ -14,27 +21,37 @@ export class ListPokemonComponent implements OnInit {
   @ViewChild('inputText', { static: true, read: ElementRef })
   inputText!: ElementRef<HTMLInputElement>;
 
-  listPokemon: Pokemon[] = [];
   offset = 0;
-  limit = 20;
-  pokemon$: any;
-  pokemonEvent$: any;
+  limit? : number;
+  listPokemon$!: Observable<PokemonDetail[]>;
+  pokemonEvent$!: Observable<Event>;
 
   constructor(private http: HttpClient) {}
 
   ngOnInit(): void {
     this.pokemonEvent$ = fromEvent(this.inputText!.nativeElement, 'input');
 
-    this.pokemon$ = this.pokemonEvent$.pipe(
+    this.listPokemon$ = this.pokemonEvent$.pipe(
       debounceTime(400),
-      switchMap(() => {
-        const url = `https://pokeapi.co/api/v2/pokemon/?offset=${this.offset}&limit=${this.limit}/${this.inputText.nativeElement.value}`;
-        return this.http.get<PokemonCount>(url).pipe(
-          tap((response) => {
-            this.listPokemon = response.results;
-          })
-        );
-      })
+      switchMap(() => this.searchPokemon()),
+      switchMap((res) =>
+        from(res.map((item) => this.getPokemonDetail(item))).pipe(
+          mergeAll(),
+          toArray()
+        )
+      )
     );
+  }
+
+  searchPokemon() {
+    return this.http
+      .get<PokemonCount>(
+        `https://pokeapi.co/api/v2/pokemon/?offset=${this.offset}&limit=${this.limit}`
+      )
+      .pipe(map((response) => response.results));
+  }
+
+  getPokemonDetail(pokemon: Pokemon) {
+    return this.http.get<PokemonDetail>(pokemon.url);
   }
 }
