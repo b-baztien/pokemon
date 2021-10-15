@@ -3,8 +3,7 @@
     <mat-form-field appearance="legacy">
       <mat-label>ค้นหาโปเกมอน</mat-label>
       <input
-        type="number"
-        [(ngModel)]="limit"
+        [(ngModel)]="pokemonName"
         #inputText
         matInput
         placeholder="พิมพ์ชื่อโปเกมอนที่ต้องการ"
@@ -12,23 +11,17 @@
       <mat-icon matSuffix>search</mat-icon>
     </mat-form-field>
   </mat-grid-tile>
-  <mat-grid-tile *ngFor="let pokemon of listPokemon$ | async" [colspan]="1">
+  <mat-grid-tile *ngFor="let pokemon of listPokemon" [colspan]="1">
     <mat-card>
       <mat-card-header>
         <div mat-card-avatar></div>
-        <mat-card-title>Shiba Inu</mat-card-title>
-        <mat-card-subtitle>Dog Breed</mat-card-subtitle>
+        <mat-card-title>{{ pokemon.name | titlecase }}</mat-card-title>
       </mat-card-header>
       <img
         mat-card-image
         [src]="pokemon.sprites.front_default"
         [alt]="'Photo of ' + pokemon.name"
       />
-      <mat-card-content>
-        <p>
-          {{ pokemon.name }}
-        </p>
-      </mat-card-content>
     </mat-card>
   </mat-grid-tile>
 </mat-grid-list>
