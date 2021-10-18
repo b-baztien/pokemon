@@ -6,6 +6,7 @@ import {
   ViewChild,
 } from '@angular/core';
 import {
+  BehaviorSubject,
   defer,
   EMPTY,
   from,
@@ -92,15 +93,15 @@ export class ListPokemonComponent implements OnInit, OnDestroy {
       })
     );
 
-    const pokemon$ = new Subject();
+    const pokemon$ = new BehaviorSubject(null);
 
     this.listPokemonSub$ = pokemonEvent$
       .pipe(
         switchMap(() => {
           this.listPokemon = [];
           this.offset = 0;
-          
-          return pokemon$.pipe(startWith(null));
+
+          return pokemon$;
         }),
         switchMap(() => this.fetchPokemon$),
         concatMap((res) => {
@@ -118,10 +119,9 @@ export class ListPokemonComponent implements OnInit, OnDestroy {
             })
           );
         }),
-        takeWhile((res) => res.length < 20),
         tap(() => {
           this.offset += this.limit;
-          pokemon$.next();
+          if (this.listPokemon.length < 20) pokemon$.next(null);
         })
       )
       .subscribe();

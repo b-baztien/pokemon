@@ -1,4 +1,4 @@
-<mat-grid-list cols="4">
+<mat-grid-list [cols]="4">
   <mat-grid-tile [colspan]="4">
     <mat-form-field appearance="legacy">
       <mat-label>ค้นหาโปเกมอน</mat-label>
@@ -23,5 +23,24 @@
         [alt]="'Photo of ' + pokemon.name"
       />
     </mat-card>
+  </mat-grid-tile>
+  <mat-grid-tile [colspan]="4">
+    <cdk-virtual-scroll-viewport [itemSize]="20">
+      <mat-grid-list cols="4">
+        <div *cdkVirtualFor="let pokemon of listPokemon">
+          <mat-card>
+            <mat-card-header>
+              <div mat-card-avatar></div>
+              <mat-card-title>{{ pokemon.name | titlecase }}</mat-card-title>
+            </mat-card-header>
+            <img
+              mat-card-image
+              [src]="pokemon.sprites.front_default"
+              [alt]="'Photo of ' + pokemon.name"
+            />
+          </mat-card>
+        </div>
+      </mat-grid-list>
+    </cdk-virtual-scroll-viewport>
   </mat-grid-tile>
 </mat-grid-list>
